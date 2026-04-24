@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+
+
+    .<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -9,6 +11,29 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
+    .toast {
+  position: fixed;
+  top: -100px; /* Hidden by default */
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 16px 30px;
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+  z-index: 1000;
+  transition: top 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toast.show { top: 30px; }
+
+.toast.success { background: #22c55e; border: 1px solid #16a34a; }
+.toast.error { background: #ef4444; border: 1px solid #dc2626; }
+    
       font-family: 'Inter', sans-serif;
       background: #e9eef3;
       height: 100vh;
@@ -89,6 +114,7 @@
   </style>
 </head>
 <body>
+  <div id="toast" class="toast"></div>
   <div class="card">
     <aside class="sidebar">
       <div class="sidebar-brand">
@@ -118,16 +144,13 @@
         <button class="resume-btn">Resume Roadmap →</button>
       </div>
 
-      <div class="header-flex">
-        <h1 class="section-title">Pick Your Next Skill</h1>
-        <a href="skillspage.html" class="view-all">View All ➔</a>
-      </div>
-
       <div class="skill-grid-preview">
-        <div class="skill-card-small"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg"><p>Frontend</p></div>
-        <div class="skill-card-small"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg"><p>Backend</p></div>
-        <div class="skill-card-small"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg"><p>DSA</p></div>
-        <div class="skill-card-small"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg"><p>Databases</p></div>
+       <div class="header-flex">
+  <h1 class="section-title">Pick Your Next Skill</h1><br>
+  <a href="skillspage.html" class="view-all">View All ➔</a>
+</div>
+
+<div class="skill-grid-preview" id="skillPreviewGrid"></div>
       </div>
     </main>
   </div>
@@ -151,6 +174,53 @@
     const db = getFirestore(app);
 
     onAuthStateChanged(auth, async (user) => {
+    // 1. Add 'collection' and 'getDocs' to your Firestore imports at the top
+import { getFirestore, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+// ... (existing init code)
+
+async function loadSkillPreviews() {
+  try {
+    const querySnapshot = await getDocs(collection(db, "skills"));
+    const previewGrid = document.getElementById('skillPreviewGrid');
+    
+    previewGrid.innerHTML = ""; // Clear existing static cards
+
+    // We only want to show the first 4 skills on the Home Page
+    let count = 0;
+    querySnapshot.forEach((docSnap) => {
+      if (count < 4) {
+        const skill = docSnap.data();
+        const skillName = docSnap.id;
+
+        previewGrid.innerHTML += `
+          <div class="skill-card-small" onclick="location.href='skillspage.html'">
+            <img src="${skill.icon}" alt="${skillName}">
+            <p>${skillName}</p>
+          </div>
+        `;
+        count++;
+      }
+    });
+  } catch (error) {
+    console.error("Error loading skill previews:", error);
+  }
+}
+
+// 2. Call the function inside your Auth listener
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    // ... your existing code to set name/initials ...
+    
+    // Load the user's progress (what we did before)
+    loadUserProgress(user); 
+
+    // Load the 4 skill previews
+    loadSkillPreviews(); 
+  } else {
+    window.location.href = "login.html";
+  }
+});
       if (!user) {
         window.location.href = "login.html";
       } else {
