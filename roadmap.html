@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Optern – Roadmap</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #e9eef3;
+      height: 100vh;
+      display: flex;
+      padding: 20px;
+    }
+
+    .card {
+      width: 100%;
+      display: flex;
+      background: #fff;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+    }
+
+    /* ===== SIDEBAR (Identical to Home/Skills/Resources) ===== */
+    .sidebar {
+      width: 280px;
+      background: linear-gradient(180deg, #0f4c75, #1b6ca8);
+      color: #fff;
+      padding: 30px 24px;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .sidebar-brand { text-align: center; margin-bottom: 25px; }
+    .sidebar-logo { width: 60px; height: 60px; background: #fff; border-radius: 14px; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; }
+    .sidebar-logo img { width: 40px; }
+    
+    .user-profile { display: flex; align-items: center; gap: 12px; padding: 15px; background: rgba(255, 255, 255, 0.15); border-radius: 16px; margin: 20px 0; }
+    .profile-icon { width: 42px; height: 42px; background: #fff; color: #0f4c75; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+    .user-info span { font-size: 14px; font-weight: 600; color: #fff; }
+
+    .nav { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+    .nav a { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; text-decoration: none; color: rgba(255,255,255,0.7); font-size: 15px; }
+    .nav a.active { background: rgba(255,255,255,0.2); color: #fff; }
+
+    .logout { margin-top: auto; display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; color: #fff; cursor: pointer; font-family: inherit; }
+
+    /* ===== MAIN CONTENT AREA (Empty for now) ===== */
+    .main { flex: 1; padding: 40px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;}
+    
+    .placeholder-content {
+      border: 2px dashed #cbd5e1;
+      border-radius: 20px;
+      padding: 60px;
+      color: #64748b;
+    }
+
+    .placeholder-content h1 { color: #0f4c75; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-logo"><img src="logo.png" alt="🎓"></div>
+        <h2>Optern</h2>
+        <p>Learn. Build. Grow.</p>
+        <div class="user-profile">
+          <div class="profile-icon" id="userInitial">U</div>
+          <div class="user-info"><span id="userNameDisplay">User</span></div>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="home.html">🏠 Home</a>
+        <a href="skillspage.html">⚡ Skills</a>
+        <a href="roadmap.html" class="active">🗺️ Roadmap</a>
+        <a href="analytics.html">📊 Analytics</a>
+      </nav>
+      <button class="logout" id="logoutBtn">🚪 Logout</button>
+    </aside>
+
+    <main class="main">
+      <div class="placeholder-content">
+        <h1>Roadmap Visualizer</h1>
+        <p>This is where Abhinav's AI will generate the personalized path.</p>
+        <p style="margin-top: 20px; font-size: 13px;">Waiting for data integration...</p>
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    
+    const firebaseConfig = { apiKey: "AIzaSyCMs8aWDbSi39CYKoOvedmHsBin7TcxRZk", authDomain: "resource-aggregator-fa6b2.firebaseapp.com", projectId: "resource-aggregator-fa6b2", storageBucket: "resource-aggregator-fa6b2.firebasestorage.app", messagingSenderId: "484510576214", appId: "1:484510576214:web:49ea02c80a09f0e473d5f7" };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) window.location.href = "index.html";
+      else {
+        document.getElementById('userNameDisplay').innerText = user.email.split('@')[0];
+        document.getElementById('userInitial').innerText = user.email.charAt(0).toUpperCase();
+      }
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      signOut(auth).then(() => window.location.href = "index.html");
+    });
+  </script>
+</body>
+</html>
