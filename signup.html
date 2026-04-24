@@ -2,10 +2,44 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Create Account</title>
   <link rel="stylesheet" href="signup.css">
+  <style>
+    /* ===== NEW: Centered Toast Styling ===== */
+    .toast {
+      position: fixed;
+      top: 55%; 
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 16px 30px;
+      border-radius: 12px;
+      color: white;
+      font-weight: 600;
+      font-size: 15px;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      text-align: center;
+    }
+
+    .toast.show {
+      top: 50%; 
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .toast.success { background: #22c55e; border: 1px solid #16a34a; }
+    .toast.error { background: #ef4444; border: 1px solid #dc2626; }
+  </style>
 </head>
 <body>
+
+<div id="toast" class="toast"></div>
 
 <div class="container">
   <div class="card">
@@ -28,10 +62,6 @@
         <label class="active">
           <input type="radio" name="role" id="roleStudent" value="Student" checked>
           Student
-        </label>
-        <label>
-          <input type="radio" name="role" id="roleCandidate" value="Candidate">
-          Candidate
         </label>
       </div>
 
@@ -94,12 +124,10 @@
 </div>
 
 <script type="module">
-  // 1. Import the functions you need from the SDKs
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  // 2. Your web app's Firebase configuration
   const firebaseConfig = {
     apiKey: "AIzaSyCMs8aWDbSi39CYKoOvedmHsBin7TcxRZk",
     authDomain: "resource-aggregator-fa6b2.firebaseapp.com",
@@ -110,17 +138,26 @@
     measurementId: "G-HFR7WC7G3Y"
   };
 
-  // 3. Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
+
+  // Toast Function
+  function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    toast.innerText = message;
+    toast.className = `toast show ${type}`;
+    
+    setTimeout(() => {
+      toast.className = 'toast';
+    }, 3000);
+  }
 
   const signupForm = document.getElementById('signupForm');
 
   signupForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // Grab values from the form
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
@@ -131,18 +168,15 @@
     const branch = document.getElementById('branch').value;
     const role = document.querySelector('input[name="role"]:checked').value;
 
-    // Check if passwords match
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+      showToast("Passwords do not match!", "error");
       return;
     }
 
     try {
-      // 4. Create the User in Authentication
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // 5. Save the extra profile info in Firestore
       await setDoc(doc(db, "users", user.uid), {
         firstName: firstName,
         lastName: lastName,
@@ -151,15 +185,21 @@
         year: year,
         branch: branch,
         role: role,
-        createdAt: new Date()
+        createdAt: new Date(),
+        currentSkill: "None",
+        progress: 0
       });
 
-      alert("Registration Successful! Redirecting to login...");
-      window.location.href = "login.html";
+      showToast("Registration Successful! Redirecting...", "success");
+      setTimeout(() => {
+        window.location.href = "login.html";
+      }, 2000);
 
     } catch (error) {
       console.error("Error signing up:", error);
-      alert("Error: " + error.message);
+      let msg = error.message;
+      if (error.code === 'auth/email-already-in-use') msg = "This email is already registered.";
+      showToast(msg, "error");
     }
   });
 </script>
