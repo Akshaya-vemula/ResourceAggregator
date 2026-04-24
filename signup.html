@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Create Account</title>
+  <title>Create Account | Optern</title>
   <link rel="stylesheet" href="signup.css">
   <style>
-    /* ===== NEW: Centered Toast Styling ===== */
+    /* ===== Centered Toast Styling ===== */
     .toast {
       position: fixed;
       top: 55%; 
@@ -85,7 +85,7 @@
         <div class="row">
           <div class="field">
             <label>College / University</label>
-            <input type="text" id="college" placeholder="e.g. MIT, Stanford" required>
+            <input type="text" id="college" placeholder="e.g. JNTU" required>
           </div>
           <div class="field">
             <label>Year of Study</label>
@@ -102,7 +102,7 @@
         <div class="row">
           <div class="field">
             <label>Branch</label>
-            <input type="text" id="branch" placeholder="e.g. CSE, ECE" required>
+            <input type="text" id="branch" placeholder="e.g. CSE" required>
           </div>
           <div class="field">
             <label>Password</label>
@@ -116,7 +116,7 @@
       </form>
 
       <p class="login-link">
-        Already have an account? <a href="login.html">Sign In</a>
+        Already have an account? <a href="index.html">Sign In</a>
       </p>
     </div>
 
@@ -127,32 +127,6 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-// ... inside your Signup Button listener ...
-
-createUserWithEmailAndPassword(auth, email, password)
-  .then(async (userCredential) => {
-    const user = userCredential.user;
-
-    // 1. CREATE THE STARTER DATA
-    await setDoc(doc(db, "users", user.uid), {
-      username: email.split('@')[0],
-      avgScore: 0,
-      badges: 0,
-      resourcesViewed: 0,
-      cyberProgress: 0,
-      dsaProgress: 0,
-      frontendProgress: 0,
-      createdAt: new Date()
-    });
-
-    // 2. NOW REDIRECT
-    window.location.href = "home.html";
-  })
-  .catch((error) => {
-    console.error("Signup Error:", error);
-  });
 
   const firebaseConfig = {
     apiKey: "AIzaSyCMs8aWDbSi39CYKoOvedmHsBin7TcxRZk",
@@ -160,23 +134,18 @@ createUserWithEmailAndPassword(auth, email, password)
     projectId: "resource-aggregator-fa6b2",
     storageBucket: "resource-aggregator-fa6b2.firebasestorage.app",
     messagingSenderId: "484510576214",
-    appId: "1:484510576214:web:49ea02c80a09f0e473d5f7",
-    measurementId: "G-HFR7WC7G3Y"
+    appId: "1:484510576214:web:49ea02c80a09f0e473d5f7"
   };
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // Toast Function
   function showToast(message, type = 'success') {
     const toast = document.getElementById('toast');
     toast.innerText = message;
     toast.className = `toast show ${type}`;
-    
-    setTimeout(() => {
-      toast.className = 'toast';
-    }, 3000);
+    setTimeout(() => { toast.className = 'toast'; }, 3000);
   }
 
   const signupForm = document.getElementById('signupForm');
@@ -200,9 +169,12 @@ createUserWithEmailAndPassword(auth, email, password)
     }
 
     try {
+      // 1. Create the user in Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
+      // 2. Initialize the Firestore document with all necessary fields
+      // This prevents the 404 error on Home/Analytics pages
       await setDoc(doc(db, "users", user.uid), {
         firstName: firstName,
         lastName: lastName,
@@ -211,20 +183,27 @@ createUserWithEmailAndPassword(auth, email, password)
         year: year,
         branch: branch,
         role: role,
-        createdAt: new Date(),
-        currentSkill: "None",
-        progress: 0
+        username: email.split('@')[0],
+        avgScore: 0,
+        badges: 0,
+        resourcesViewed: 0,
+        cyberProgress: 0,
+        dsaProgress: 0,
+        frontendProgress: 0,
+        createdAt: new Date()
       });
 
-      showToast("Registration Successful! Redirecting...", "success");
+      showToast("Success! Taking you to your dashboard...", "success");
+
+      // 3. Redirect to home immediately
       setTimeout(() => {
-        window.location.href = "login.html";
-      }, 2000);
+        window.location.href = "home.html";
+      }, 1500);
 
     } catch (error) {
-      console.error("Error signing up:", error);
+      console.error("Signup Error:", error);
       let msg = error.message;
-      if (error.code === 'auth/email-already-in-use') msg = "This email is already registered.";
+      if (error.code === 'auth/email-already-in-use') msg = "This email is already in use.";
       showToast(msg, "error");
     }
   });
