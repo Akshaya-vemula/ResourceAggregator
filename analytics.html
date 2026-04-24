@@ -26,7 +26,7 @@
       box-shadow: 0 20px 50px rgba(0,0,0,0.1);
     }
 
-    /* ===== SIDEBAR (Identical to all other pages) ===== */
+    /* ===== SIDEBAR ===== */
     .sidebar {
       width: 280px;
       background: linear-gradient(180deg, #0f4c75, #1b6ca8);
@@ -55,30 +55,6 @@
     .main { flex: 1; padding: 40px; overflow-y: auto; }
     .page-title { font-size: 28px; font-weight: 700; color: #0f4c75; margin-bottom: 30px; }
 
-    /* GRID FOR CHARTS */
-    .analytics-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 25px;
-    }
-
-    .chart-card {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 20px;
-      padding: 25px;
-    }
-
-    .chart-card h3 { color: #1e293b; font-size: 16px; margin-bottom: 20px; }
-
-    /* PROGRESS BARS LIST */
-    .progress-list { display: flex; flex-direction: column; gap: 15px; }
-    .progress-item { display: flex; flex-direction: column; gap: 5px; }
-    .progress-header { display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; color: #64748b; }
-    .bar-bg { height: 8px; background: #e2e8f0; border-radius: 10px; overflow: hidden; }
-    .bar-fill { height: 100%; background: #0f4c75; border-radius: 10px; }
-
-    /* SCORE CARDS */
     .summary-row {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -95,6 +71,27 @@
     }
     .stat-box h2 { font-size: 32px; }
     .stat-box p { font-size: 12px; opacity: 0.8; }
+
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 25px;
+    }
+
+    .chart-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 25px;
+    }
+
+    .chart-card h3 { color: #1e293b; font-size: 16px; margin-bottom: 20px; }
+
+    .progress-list { display: flex; flex-direction: column; gap: 15px; }
+    .progress-item { display: flex; flex-direction: column; gap: 5px; }
+    .progress-header { display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; color: #64748b; }
+    .bar-bg { height: 8px; background: #e2e8f0; border-radius: 10px; overflow: hidden; }
+    .bar-fill { height: 100%; background: #0f4c75; border-radius: 10px; transition: width 0.5s ease-in-out; }
 
   </style>
 </head>
@@ -124,9 +121,9 @@
       <h1 class="page-title">Learning Analytics</h1>
 
       <div class="summary-row">
-        <div class="stat-box"><h2>85%</h2><p>Average Quiz Score</p></div>
-        <div class="stat-box"><h2>12</h2><p>Badges Earned</p></div>
-        <div class="stat-box"><h2>124</h2><p>Total Resources Viewed</p></div>
+        <div class="stat-box"><h2 id="avgScore">0%</h2><p>Average Quiz Score</p></div>
+        <div class="stat-box"><h2 id="badgesCount">0</h2><p>Badges Earned</p></div>
+        <div class="stat-box"><h2 id="resourcesCount">0</h2><p>Total Resources Viewed</p></div>
       </div>
 
       <div class="analytics-grid">
@@ -134,27 +131,26 @@
           <h3>Skill Mastery</h3>
           <div class="progress-list">
             <div class="progress-item">
-              <div class="progress-header"><span>Frontend Development</span><span>75%</span></div>
-              <div class="bar-bg"><div class="bar-fill" style="width: 75%;"></div></div>
+              <div class="progress-header"><span>Frontend Development</span><span id="frontendText">0%</span></div>
+              <div class="bar-bg"><div class="bar-fill" id="frontendBar" style="width: 0%;"></div></div>
             </div>
             <div class="progress-item">
-              <div class="progress-header"><span>Cyber Security</span><span>40%</span></div>
-              <div class="bar-bg"><div class="bar-fill" style="width: 40%;"></div></div>
+              <div class="progress-header"><span>Cyber Security</span><span id="cyberText">0%</span></div>
+              <div class="bar-bg"><div class="bar-fill" id="cyberBar" style="width: 0%;"></div></div>
             </div>
             <div class="progress-item">
-              <div class="progress-header"><span>Data Structures</span><span>90%</span></div>
-              <div class="bar-bg"><div class="bar-fill" style="width: 90%;"></div></div>
+              <div class="progress-header"><span>Data Structures</span><span id="dsaText">0%</span></div>
+              <div class="bar-bg"><div class="bar-fill" id="dsaBar" style="width: 0%;"></div></div>
             </div>
           </div>
         </div>
 
         <div class="chart-card">
           <h3>Recent Activity</h3>
-          <div style="font-size: 14px; color: #475569;">
-            <p style="margin-bottom: 10px;">✅ Completed "Linked List" Roadmap</p>
-            <p style="margin-bottom: 10px;">📖 Read "Linux Networking" Docs</p>
-            <p style="margin-bottom: 10px;">📺 Watched "React Hooks" Video</p>
-            <p style="margin-bottom: 10px;">📝 Started "Python Basics" Assessment</p>
+          <div id="activityList" style="font-size: 14px; color: #475569;">
+            <p style="margin-bottom: 10px;">✅ Setup Optern Profile</p>
+            <p style="margin-bottom: 10px;">⚡ Connected to Cloud Database</p>
+            <p style="margin-bottom: 10px;">🚀 Ready to learn!</p>
           </div>
         </div>
       </div>
@@ -164,19 +160,66 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    
-    const firebaseConfig = { apiKey: "AIzaSyCMs8aWDbSi39CYKoOvedmHsBin7TcxRZk", authDomain: "resource-aggregator-fa6b2.firebaseapp.com", projectId: "resource-aggregator-fa6b2", storageBucket: "resource-aggregator-fa6b2.firebasestorage.app", messagingSenderId: "484510576214", appId: "1:484510576214:web:49ea02c80a09f0e473d5f7" };
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = { 
+      apiKey: "AIzaSyCMs8aWDbSi39CYKoOvedmHsBin7TcxRZk", 
+      authDomain: "resource-aggregator-fa6b2.firebaseapp.com", 
+      projectId: "resource-aggregator-fa6b2", 
+      storageBucket: "resource-aggregator-fa6b2.firebasestorage.app", 
+      messagingSenderId: "484510576214", 
+      appId: "1:484510576214:web:49ea02c80a09f0e473d5f7" 
+    };
+
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getFirestore(app);
 
-    onAuthStateChanged(auth, (user) => {
-      if (!user) window.location.href = "login.html";
-      else {
-        document.getElementById('userNameDisplay').innerText = user.email.split('@')[0];
-        document.getElementById('userInitial').innerText = user.email.charAt(0).toUpperCase();
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // 1. Sidebar Setup
+        const name = user.email.split('@')[0];
+        document.getElementById('userNameDisplay').innerText = name;
+        document.getElementById('userInitial').innerText = name.charAt(0).toUpperCase();
+
+        try {
+          // 2. Fetch User Data
+          const userRef = doc(db, "users", user.uid);
+          const userSnap = await getDoc(userRef);
+
+          if (userSnap.exists()) {
+            const data = userSnap.data();
+            
+            // 3. Update the Top Blue Boxes
+            document.getElementById('avgScore').innerText = (data.avgScore || 0) + "%";
+            document.getElementById('badgesCount').innerText = data.badges || 0;
+            document.getElementById('resourcesCount').innerText = data.resourcesViewed || 0;
+
+            // 4. Update the Skill Mastery Bars
+            // Cyber Security
+            const cyberVal = data.cyberProgress || 0;
+            document.getElementById('cyberBar').style.width = cyberVal + "%";
+            document.getElementById('cyberText').innerText = cyberVal + "%";
+
+            // DSA
+            const dsaVal = data.dsaProgress || 0;
+            document.getElementById('dsaBar').style.width = dsaVal + "%";
+            document.getElementById('dsaText').innerText = dsaVal + "%";
+
+            // Frontend
+            const frontVal = data.frontendProgress || 0;
+            document.getElementById('frontendBar').style.width = frontVal + "%";
+            document.getElementById('frontendText').innerText = frontVal + "%";
+          }
+        } catch (error) {
+          console.error("Database error:", error);
+        }
+      } else {
+        window.location.href = "login.html";
       }
     });
 
+    // Logout Functionality
     document.getElementById('logoutBtn').addEventListener('click', () => {
       signOut(auth).then(() => window.location.href = "login.html");
     });
