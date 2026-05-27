@@ -7,38 +7,33 @@
   <style>
     /* ===== TOAST STYLING ===== */
     .toast {
-  position: fixed;
-  /* Start hidden and slightly lower than the middle */
-  top: 55%; 
-  left: 50%;
-  transform: translate(-50%, -50%); /* Centers it perfectly */
-  padding: 16px 30px;
-  border-radius: 12px;
-  color: white;
-  font-weight: 600;
-  font-size: 15px;
-  z-index: 1000;
-  
-  /* Smooth fade and slide up effect */
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  
-  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-  display: flex;
-  align-items: center;
-  text-align: center;
-}
+      position: fixed;
+      top: 55%; 
+      left: 50%;
+      transform: translate(-50%, -50%); /* Centers it perfectly */
+      padding: 16px 30px;
+      border-radius: 12px;
+      color: white;
+      font-weight: 600;
+      font-size: 15px;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      text-align: center;
+    }
 
-/* When the "show" class is added */
-.toast.show {
-  top: 50%; /* Moves to the exact middle */
-  opacity: 1;
-  visibility: visible;
-}
+    .toast.show {
+      top: 50%; /* Moves to the exact middle */
+      opacity: 1;
+      visibility: visible;
+    }
 
-.toast.success { background: #22c55e; border: 1px solid #16a34a; }
-.toast.error { background: #ef4444; border: 1px solid #dc2626; }
+    .toast.success { background: #22c55e; border: 1px solid #16a34a; }
+    .toast.error { background: #ef4444; border: 1px solid #dc2626; }
 
     /* ===== GENERAL STYLING ===== */
     * {
@@ -52,6 +47,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: hidden; /* Prevents scrollbars during initial animation */
     }
 
     .wrapper { width: 100%; max-width: 1000px; padding: 20px; }
@@ -76,10 +72,18 @@
     }
 
     .branding { text-align: center; max-width: 320px; }
+    
+    /* --- MODIFIED LOGO STYLING (LARGE) --- */
     .branding img {
-      width: 90px; margin-bottom: 20px;
-      background: white; padding: 14px; border-radius: 14px;
+      width: 150px; /* Increased from 90px to 150px */
+      height: auto; /* Maintains aspect ratio */
+      margin-bottom: 25px; /* Increased margin */
+      background: white; 
+      padding: 20px; /* Increased padding */
+      border-radius: 18px; /* Slightly softer curve */
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2); /* Added pop to the logo */
     }
+    
     .branding h1 { font-size: 32px; margin-bottom: 12px; }
     .branding p { font-size: 15px; line-height: 1.6; opacity: 0.9; }
 
@@ -94,6 +98,7 @@
     .input-box input {
       width: 100%; padding: 12px 40px;
       border-radius: 8px; border: 1px solid #ccc; outline: none;
+      transition: all 0.2s ease-in-out; /* Smooth hover/focus transition */
     }
     .input-box span {
       position: absolute; top: 50%; transform: translateY(-50%);
@@ -102,7 +107,7 @@
 
     .input-box input:focus {
       border-color: #1b6ca8;
-      box-shadow: 0 0 0 2px rgba(27,108,168,0.2);
+      box-shadow: 0 0 0 3px rgba(27,108,168,0.2); /* Increased glow */
     }
 
     .options {
@@ -116,16 +121,85 @@
       background: #0f4c75; color: white;
       border: none; border-radius: 8px;
       font-size: 15px; font-weight: 600;
-      cursor: pointer; transition: 0.3s;
+      cursor: pointer; 
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth but snappy transition */
     }
-    button:hover { background: #1b6ca8; }
+    button:hover { 
+      background: #1b6ca8; 
+      transform: translateY(-2px); /* Lifts the button slightly */
+      box-shadow: 0 5px 15px rgba(27,108,168,0.3); /* Adds a shadow on hover */
+    }
+    button:active {
+      transform: translateY(1px); /* Compresses on click */
+    }
 
     .signup { margin-top: 22px; font-size: 14px; text-align: center; }
     .signup a { color: #0f4c75; font-weight: 600; text-decoration: none; }
 
+    /* ===== REFINED LOAD TRANSITIONS ===== */
+    
+    /* Pre-animated states (Initial load) */
+    .left .branding img, 
+    .left .branding h1, 
+    .left .branding p,
+    .right h2,
+    .right .subtitle,
+    #loginForm label,
+    #loginForm .input-box,
+    #loginForm .options,
+    #loginForm button,
+    .right .signup {
+      opacity: 0;
+      transform: translateY(20px); /* Start slightly lower */
+      animation: elementFadeIn 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    }
+    
+    /* Define the core animation */
+    @keyframes elementFadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0); /* Ends at its original position */
+      }
+    }
+
+    /* Staggered Delay for smoother reveal */
+    .left .branding img { animation-delay: 0.1s; }
+    .left .branding h1 { animation-delay: 0.2s; }
+    .left .branding p { animation-delay: 0.3s; }
+    
+    .right h2 { animation-delay: 0.3s; }
+    .right .subtitle { animation-delay: 0.35s; }
+    #loginForm label[for="userEmail"] { animation-delay: 0.4s; }
+    #loginForm .input-box:nth-of-type(1) { animation-delay: 0.45s; }
+    
+    #loginForm label[for="userPass"] { animation-delay: 0.5s; }
+    #loginForm .input-box:nth-of-type(2) { animation-delay: 0.55s; }
+    
+    #loginForm .options { animation-delay: 0.6s; }
+    #loginForm button { animation-delay: 0.65s; }
+    .right .signup { animation-delay: 0.75s; }
+
+    /* Desktop Media Query for card fade-in */
+    @media (min-width: 769px) {
+      .wrapper {
+        opacity: 0;
+        transform: scale(0.97) translateY(30px);
+        animation: cardFadeUp 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) 0.1s forwards;
+      }
+      @keyframes cardFadeUp {
+        to {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+      }
+    }
+
     @media (max-width: 768px) {
-      .card { flex-direction: column; }
+      .card { flex-direction: column; height: auto; }
       .left, .right { width: 100%; }
+      .left { padding: 60px 40px 40px; } /* More space for the large logo on mobile */
+      .wrapper { padding: 10px; }
+      body { overflow: auto; height: auto; padding: 20px 0; } /* Restores scrolling for mobile load */
     }
   </style>
 </head>
@@ -179,6 +253,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
+    // Re-paste your specific config back here if needed (this uses your provided config)
     const firebaseConfig = { 
       apiKey: "AIzaSyCMs8aWDbSi39CYKoOvedmHsBin7TcxRZk", 
       authDomain: "resource-aggregator-fa6b2.firebaseapp.com", 
