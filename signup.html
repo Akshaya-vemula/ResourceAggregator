@@ -4,9 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Create Account | Optern</title>
-  <link rel="stylesheet" href="signup.css">
   <style>
-    /* ===== Centered Toast Styling ===== */
+    /* ===== TOAST STYLING (MATCHED) ===== */
     .toast {
       position: fixed;
       top: 55%; 
@@ -36,269 +35,364 @@
     .toast.success { background: #22c55e; border: 1px solid #16a34a; }
     .toast.error { background: #ef4444; border: 1px solid #dc2626; }
 
-    /* ===== OVERRIDE BASE STYLES FOR CONSISTENCY ===== */
+    /* ===== GENERAL STYLING (MATCHED) ===== */
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: "Inter", "Segoe UI", sans-serif;
+    }
+
     body {
-      overflow-x: hidden;
+      min-height: 100vh;
+      background: #e9eef3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
     }
 
-    /* --- MATCHED LOGO STYLING FROM SIGN-IN --- */
-    .left img {
-      width: 150px !important; /* Forces consistency with sign-in */
-      height: auto !important;
-      margin-bottom: 25px !important;
-      background: white !important;
-      padding: 20px !important;
-      border-radius: 18px !important;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2) !important;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
+    .wrapper { width: 100%; max-width: 1000px; }
+
+    .card {
+      display: flex;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+      background: white;
     }
 
-    /* Form control hover/focus transitions */
-    .field input, .field select {
+    /* LEFT SIDE (MATCHED) */
+    .left {
+      width: 50%;
+      background: linear-gradient(135deg, #0f4c75, #1b6ca8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      color: white;
+    }
+
+    .branding { text-align: center; max-width: 320px; }
+    
+    .branding img {
+      width: 150px;
+      height: auto;
+      margin-bottom: 25px;
+      background: white; 
+      padding: 20px;
+      border-radius: 18px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+    
+    .branding h1 { font-size: 32px; margin-bottom: 12px; }
+    .branding p { font-size: 15px; line-height: 1.6; opacity: 0.9; }
+
+    /* RIGHT SIDE (MATCHED) */
+    .right { width: 50%; padding: 40px 40px; }
+    .right h2 { font-size: 28px; margin-bottom: 6px; color: #0f4c75; }
+    .subtitle { color: #666; font-size: 14px; margin-bottom: 25px; }
+
+    /* ROLE SELECTOR */
+    .role { margin-bottom: 20px; display: none; } /* Hidden or styled implicitly to match login layout minimalism */
+
+    label { font-size: 13px; color: #333; margin-bottom: 6px; display: block; }
+
+    /* FLEX ROW FOR GRID FIELDS */
+    .row {
+      display: flex;
+      gap: 15px;
+    }
+    .row .field {
+      flex: 1;
+    }
+
+    /* MATCHED INPUT BOX STYLING */
+    .input-box { position: relative; margin-bottom: 18px; }
+    .input-box input, .input-box select {
+      width: 100%; padding: 12px 12px 12px 40px;
+      border-radius: 8px; border: 1px solid #ccc; outline: none;
+      font-size: 14px;
+      background-color: white;
       transition: all 0.2s ease-in-out;
+      appearance: none; /* Removes native select styling arrow */
     }
-    .field input:focus, .field select:focus {
-      border-color: #1b6ca8 !important;
-      box-shadow: 0 0 0 3px rgba(27,108,168,0.2) !important;
-      outline: none;
-    }
-
-    /* Button Transition */
-    button[type="submit"] {
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    .input-box select {
       cursor: pointer;
     }
-    button[type="submit"]:hover {
+    .input-box span {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      left: 12px; font-size: 14px; opacity: 0.6;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .input-box input:focus, .input-box select:focus {
+      border-color: #1b6ca8;
+      box-shadow: 0 0 0 3px rgba(27,108,168,0.2);
+    }
+
+    /* BUTTON STYLING (MATCHED) */
+    button {
+      width: 100%; padding: 12px;
+      background: #0f4c75; color: white;
+      border: none; border-radius: 8px;
+      font-size: 15px; font-weight: 600;
+      cursor: pointer; 
+      margin-top: 10px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    button:hover { 
+      background: #1b6ca8; 
       transform: translateY(-2px);
       box-shadow: 0 5px 15px rgba(27,108,168,0.3);
     }
-    button[type="submit"]:active {
+    button:active {
       transform: translateY(1px);
     }
 
-    /* ===== REFINED LOAD TRANSITIONS ===== */
-    .left img, 
-    .left h1, 
-    .left p,
+    .login-link { margin-top: 22px; font-size: 14px; text-align: center; color: #666; }
+    .login-link a { color: #0f4c75; font-weight: 600; text-decoration: none; }
+
+    /* ===== REFINED LOAD TRANSITIONS (STAGGERED MATCH) ===== */
+    .left .branding img, 
+    .left .branding h1, 
+    .left .branding p,
     .right h2,
     .right .subtitle,
-    .right .role,
     #signupForm .row,
-    #signupForm > .field,
+    #signupForm .single-field,
     #signupForm button,
     .right .login-link {
       opacity: 0;
-      transform: translateY(20px);
-      animation: elementFadeIn 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+      transform: translateY(15px);
+      animation: elementFadeIn 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
     }
-
+    
     @keyframes elementFadeIn {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Staggered load effect */
-    .left img { animation-delay: 0.1s; }
-    .left h1 { animation-delay: 0.2s; }
-    .left p { animation-delay: 0.3s; }
+    .left .branding img { animation-delay: 0.1s; }
+    .left .branding h1 { animation-delay: 0.15s; }
+    .left .branding p { animation-delay: 0.2s; }
     
-    .right h2 { animation-delay: 0.25s; }
-    .right .subtitle { animation-delay: 0.3s; }
-    .right .role { animation-delay: 0.35s; }
+    .right h2 { animation-delay: 0.2s; }
+    .right .subtitle { animation-delay: 0.25s; }
     
-    #signupForm .row:nth-of-type(1) { animation-delay: 0.4s; }
-    #signupForm > .field { animation-delay: 0.45s; }
-    #signupForm .row:nth-of-type(2) { animation-delay: 0.5s; }
-    #signupForm .row:nth-of-type(3) { animation-delay: 0.55s; }
+    #signupForm .row:nth-of-type(1) { animation-delay: 0.3s; }
+    #signupForm .single-field { animation-delay: 0.35s; }
+    #signupForm .row:nth-of-type(2) { animation-delay: 0.4s; }
+    #signupForm .row:nth-of-type(3) { animation-delay: 0.45s; }
     
-    #signupForm button { animation-delay: 0.6s; }
-    .right .login-link { animation-delay: 0.7s; }
+    #signupForm button { animation-delay: 0.5s; }
+    .right .login-link { animation-delay: 0.55s; }
 
     @media (min-width: 769px) {
-      .card {
+      .wrapper {
         opacity: 0;
-        transform: scale(0.97) translateY(30px);
-        animation: cardFadeUp 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) 0.1s forwards;
+        transform: scale(0.97) translateY(20px);
+        animation: cardFadeUp 0.7s cubic-bezier(0.165, 0.84, 0.44, 1) 0.05s forwards;
       }
-      @keyframes cardFadeUp {
-        to {
-          opacity: 1;
-          transform: scale(1) translateY(0);
-        }
-      }
+      @keyframes cardFadeUp { to { opacity: 1; transform: scale(1) translateY(0); } }
+    }
+
+    @media (max-width: 768px) {
+      .card { flex-direction: column; }
+      .left, .right { width: 100%; }
+      .row { flex-direction: column; gap: 0; }
     }
   </style>
 </head>
 <body>
 
-<div id="toast" class="toast"></div>
+  <div id="toast" class="toast"></div>
 
-<div class="container">
-  <div class="card">
-
-    <div class="left">
-      <img src="logo.png" alt="Logo">
-      <h1>Join Us Today</h1>
-      <p>
-        Start your learning journey. Create an account
-        to access courses, track progress, and achieve
-        your goals.
-      </p>
-    </div>
-
-    <div class="right">
-      <h2>Create Account</h2>
-      <p class="subtitle">Fill in the details to get started</p>
-
-      <div class="role">
-        <label class="active">
-          <input type="radio" name="role" id="roleStudent" value="Student" checked>
-          Student
-        </label>
+  <div class="wrapper">
+    <div class="card">
+      
+      <div class="left">
+        <div class="branding">
+          <img src="logo.png" alt="Logo">
+          <h1>Join Us Today</h1>
+          <p>Start your learning journey. Create an account to access courses, track progress, and achieve your goals.</p>
+        </div>
       </div>
 
-      <form id="signupForm">
-        <div class="row">
-          <div class="field">
-            <label>First Name</label>
-            <input type="text" id="firstName" placeholder="John" required>
-          </div>
-          <div class="field">
-            <label>Last Name</label>
-            <input type="text" id="lastName" placeholder="Doe" required>
-          </div>
-        </div>
+      <div class="right">
+        <h2>Create Account</h2>
+        <p class="subtitle">Fill in the details to get started</p>
 
-        <div class="field">
-          <label>Email Address</label>
-          <input type="email" id="email" placeholder="you@example.com" required>
-        </div>
+        <form id="signupForm">
+          
+          <input type="hidden" name="role" value="Student">
 
-        <div class="row">
-          <div class="field">
-            <label>College / University</label>
-            <input type="text" id="college" placeholder="e.g. JNTU" required>
+          <div class="row">
+            <div class="field">
+              <label for="firstName">First Name</label>
+              <div class="input-box">
+                <span>👤</span>
+                <input type="text" id="firstName" placeholder="John" required>
+              </div>
+            </div>
+            <div class="field">
+              <label for="lastName">Last Name</label>
+              <div class="input-box">
+                <span>👤</span>
+                <input type="text" id="lastName" placeholder="Doe" required>
+              </div>
+            </div>
           </div>
-          <div class="field">
-            <label>Year of Study</label>
-            <select id="year" required>
-              <option value="">Select year</option>
-              <option value="1">1st Year</option>
-              <option value="2">2nd Year</option>
-              <option value="3">3rd Year</option>
-              <option value="4">4th Year</option>
-            </select>
-          </div>
-        </div>
 
-        <div class="row">
-          <div class="field">
-            <label>Branch</label>
-            <input type="text" id="branch" placeholder="e.g. CSE" required>
+          <div class="single-field">
+            <label for="email">Email Address</label>
+            <div class="input-box">
+              <span>✉️</span>
+              <input type="email" id="email" placeholder="you@example.com" required>
+            </div>
           </div>
-          <div class="field">
-            <label>Password</label>
-            <input type="password" id="password" required>
-            <label style="margin-top: 10px;">Verify Password</label>
-            <input type="password" id="confirmPassword" required>
+
+          <div class="row">
+            <div class="field">
+              <label for="college">College / University</label>
+              <div class="input-box">
+                <span>🏢</span>
+                <input type="text" id="college" placeholder="e.g. JNTU" required>
+              </div>
+            </div>
+            <div class="field">
+              <label for="year">Year of Study</label>
+              <div class="input-box">
+                <span>🎓</span>
+                <select id="year" required>
+                  <option value="">Select year</option>
+                  <option value="1">1st Year</option>
+                  <option value="2">2nd Year</option>
+                  <option value="3">3rd Year</option>
+                  <option value="4">4th Year</option>
+                </select>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <button type="submit">Register →</button>
-      </form>
+          <div class="row">
+            <div class="field">
+              <label for="branch">Branch</label>
+              <div class="input-box">
+                <span>🌿</span>
+                <input type="text" id="branch" placeholder="e.g. CSE" required>
+              </div>
+            </div>
+            <div class="field">
+              <label for="password">Password</label>
+              <div class="input-box">
+                <span>🔒</span>
+                <input type="password" id="password" placeholder="••••••••" required>
+              </div>
+            </div>
+          </div>
 
-      <p class="login-link">
-        Already have an account? <a href="index.html">Sign In</a>
-      </p>
+          <div class="row">
+            <div class="field" style="display:none;">
+              </div>
+            <div class="field">
+              <label for="confirmPassword">Verify Password</label>
+              <div class="input-box">
+                <span>🔒</span>
+                <input type="password" id="confirmPassword" placeholder="••••••••" required>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit">Register →</button>
+        </form>
+
+        <p class="login-link">
+          Already have an account? <a href="index.html">Sign In</a>
+        </p>
+      </div>
+
     </div>
-
   </div>
-</div>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyCMs8aWDbSi39CYKoOvedmHsBin7TcxRZk",
-    authDomain: "resource-aggregator-fa6b2.firebaseapp.com",
-    projectId: "resource-aggregator-fa6b2",
-    storageBucket: "resource-aggregator-fa6b2.firebasestorage.app",
-    messagingSenderId: "484510576214",
-    appId: "1:484510576214:web:49ea02c80a09f0e473d5f7"
-  };
+    const firebaseConfig = {
+      apiKey: "AIzaSyCMs8aWDbSi39CYKoOvedmHsBin7TcxRZk",
+      authDomain: "resource-aggregator-fa6b2.firebaseapp.com",
+      projectId: "resource-aggregator-fa6b2",
+      storageBucket: "resource-aggregator-fa6b2.firebasestorage.app",
+      messagingSenderId: "484510576214",
+      appId: "1:484510576214:web:49ea02c80a09f0e473d5f7"
+    };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-  function showToast(message, type = 'success') {
-    const toast = document.getElementById('toast');
-    toast.innerText = message;
-    toast.className = `toast show ${type}`;
-    setTimeout(() => { toast.className = 'toast'; }, 3000);
-  }
-
-  const signupForm = document.getElementById('signupForm');
-
-  signupForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
-    const firstName = document.getElementById('firstName').value;
-    const lastName = document.getElementById('lastName').value;
-    const college = document.getElementById('college').value;
-    const year = document.getElementById('year').value;
-    const branch = document.getElementById('branch').value;
-    const role = document.querySelector('input[name="role"]:checked').value;
-
-    if (password !== confirmPassword) {
-      showToast("Passwords do not match!", "error");
-      return;
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.innerText = message;
+      toast.className = `toast show ${type}`;
+      setTimeout(() => { toast.className = 'toast'; }, 3000);
     }
 
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+    const signupForm = document.getElementById('signupForm');
 
-      await setDoc(doc(db, "users", user.uid), {
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        college: college,
-        year: year,
-        branch: branch,
-        role: role,
-        username: email.split('@')[0],
-        avgScore: 0,
-        badges: 0,
-        resourcesViewed: 0,
-        cyberProgress: 0,
-        dsaProgress: 0,
-        frontendProgress: 0,
-        createdAt: new Date()
-      });
+    signupForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
 
-      showToast("Success! Taking you to your dashboard...", "success");
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      const firstName = document.getElementById('firstName').value;
+      const lastName = document.getElementById('lastName').value;
+      const college = document.getElementById('college').value;
+      const year = document.getElementById('year').value;
+      const branch = document.getElementById('branch').value;
+      const role = document.querySelector('input[name="role"]').value;
 
-      setTimeout(() => {
-        window.location.href = "home.html";
-      }, 1500);
+      if (password !== confirmPassword) {
+        showToast("Passwords do not match!", "error");
+        return;
+      }
 
-    } catch (error) {
-      console.error("Signup Error:", error);
-      let msg = error.message;
-      if (error.code === 'auth/email-already-in-use') msg = "This email is already in use.";
-      showToast(msg, "error");
-    }
-  });
-</script>
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        await setDoc(doc(db, "users", user.uid), {
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          college: college,
+          year: year,
+          branch: branch,
+          role: role,
+          username: email.split('@')[0],
+          avgScore: 0,
+          badges: 0,
+          resourcesViewed: 0,
+          cyberProgress: 0,
+          dsaProgress: 0,
+          frontendProgress: 0,
+          createdAt: new Date()
+        });
+
+        showToast("Success! Taking you to your dashboard...", "success");
+
+        setTimeout(() => {
+          window.location.href = "home.html";
+        }, 1500);
+
+      } catch (error) {
+        console.error("Signup Error:", error);
+        let msg = error.message;
+        if (error.code === 'auth/email-already-in-use') msg = "This email is already in use.";
+        showToast(msg, "error");
+      }
+    });
+  </script>
 </body>
 </html>
